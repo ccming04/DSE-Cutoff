@@ -21,10 +21,12 @@ df = get_data()
 # --- SIDEBAR SEARCH ---
 st.sidebar.title("🔍 HKDSE Search")
 sub_list = sorted(df['Subject'].unique())
+
 selected_sub = st.sidebar.selectbox("Choose Subject", sub_list)
 
 # --- MAIN CONTENT ---
-st.title(f"📊 {selected_subject} Performance Hub")
+# Now we use 'selected_sub' here so they match!
+st.title(f"📊 {selected_sub} Performance Hub")
 
 # Filter data
 sub_df = df[df['Subject'] == selected_sub].sort_values('Year')
