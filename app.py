@@ -44,18 +44,35 @@ st.subheader("🎯 Result Predictor")
 p_col1, p_col2 = st.columns([1, 2])
 
 with p_col1:
-    my_score = st.slider("Input Mock Exam Score (%)", 0.0, 100.0, 75.0)
+    # Requirement 4: Numeric Input for better precision and mobile number pad
+    my_score = st.number_input(
+        "Enter Mock Exam Score (%)", 
+        min_value=0.0, 
+        max_value=100.0, 
+        value=75.0, 
+        step=0.1
+    )
+    
+    # Select year to compare against (sorted newest to oldest)
     target_year = st.selectbox("Compare with Year:", sub_df['Year'].unique()[::-1])
     
-    # Logic
+    # Logic to calculate level based on CSV data
     year_row = sub_df[sub_df['Year'] == target_year].iloc[0]
     result = "Below Level 2"
-    for lvl in ['5**', '5*', '5', '4', '3', '2']:
+    levels = ['5**', '5*', '5', '4', '3', '2']
+    
+    for lvl in levels:
         if my_score >= year_row[lvl]:
             result = f"Level {lvl}"
             break
-    st.success(f"Based on {target_year} difficulty, you get: **{result}**")
-
+            
+    # Fancy Result Card (Replaces the standard st.success)
+    st.markdown(f"""
+        <div style="background-color:#1c1e26; padding:20px; border-radius:10px; border-left: 5px solid #4CAF50; margin-top: 10px;">
+            <p style="margin:0; color:#888; font-size: 14px;">Estimated Result for {target_year}</p>
+            <h2 style="margin:0; color:#4CAF50; font-weight: bold;">{result}</h2>
+        </div>
+    """, unsafe_allow_html=True)
 with p_col2:
     # 3. Interactive Design (Requirement 1)
     fig = px.line(sub_df, x='Year', y=['5**', '5', '3'], 
